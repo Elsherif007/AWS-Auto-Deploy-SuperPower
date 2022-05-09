@@ -1,0 +1,55 @@
+---
+- name: "Install dependencies for project"
+  shell: |
+    sudo apt-get -y update
+    sudo apt-get -y install \
+      ca-certificates \
+      curl \
+      gnupg \
+      lsb-release
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get -y update
+    sudo apt-get -y install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+    sudo docker run --name some-postgres -e POSTGRES_PASSWORD=mypassword -d -p 5432:5432 postgres
+
+
+- name: "Copy from src to dist"
+  copy:
+    src: "~/artifact.tar.gz"
+    dest: "~/artifact.tar.gz"
+
+- name: "create new folder"
+  shell: mkdir ~/backend
+
+- name: "do unziping to copied files in dest backend"
+  ansible.builtin.unarchive:
+    src: ~/artifact.tar.gz
+    dest: ~/backend
+    
+- name: "Install dependencies for project"
+  shell: |
+    cd ~/backend
+    npm install
+# - name: "Copying env vars"
+#   copy:
+#     src: "~/.env"
+#     dest: "~/backend/.env"
+
+- name: "sleep"
+  shell: |
+    sleep 15
+
+- name: "Executing node"
+  shell: |
+    cd ~/backend
+    pm2 stop default
+    pm2 start npm -- start
+  register: execute_node
+
+- name: "execute node msg"
+  debug:
+    msg: "{{ execute_node.stdout_lines }}"
