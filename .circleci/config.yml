@@ -131,7 +131,7 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
-            npm audit --audit-level=criticalom git
+            npm audit --audit-level=critical
       # Restore from cache
       # Your job code here
 
