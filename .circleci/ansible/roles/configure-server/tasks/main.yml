@@ -10,7 +10,7 @@
   apt:
     name: [ "zip", "unzip", "tar" ]
     state: latest
-    update_cache: yes
+    # update_cache: yes
 
 - name: install node
   shell: |
@@ -20,5 +20,5 @@
   npm:
     name: pm2
     global: yes
-    production: yes
+    # production: yes     ##remove no use
     state: present
