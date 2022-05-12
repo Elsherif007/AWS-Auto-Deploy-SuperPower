@@ -202,9 +202,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar gzip nodejs npm ansible 
-            apk add --update ansible
-            pip install awscli
+            apt -y update
+            apt -y install tar gzip nodejs npm ansible 
+            
+            pip install awscli ansible
 
       - run:
           name: Configure server
@@ -251,7 +252,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar npm
+            apt -y update
+            apt -y install tar npm
             pip install awscli
 
       - run:
@@ -291,7 +293,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar npm ansible nodejs
+            apt -y update
+            apt -y install tar npm ansible nodejs
             pip install awscli                
 
       - run:
