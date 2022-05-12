@@ -14,15 +14,15 @@
 
 - name: install node
   shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - && sudo apt-get install -y nodejs
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    source ~/.bashrc
+    nvm install v13.8.0
+    node -v
+  register: node_version
 
-
-- name: "Install Node.js"    ## change
-  become: true
-  apt:
-    name: ["nodejs"]
-    state: latest
-    update_cache: yes
+- name: "execute node version"
+  debug:
+    msg: "{{ node_version.stdout_lines }}"
     
 - name: "Installing pm2"
   npm:
