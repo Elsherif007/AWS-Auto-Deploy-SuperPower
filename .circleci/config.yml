@@ -181,11 +181,11 @@ jobs:
               --output text)
             echo "$BACKEND_AWS_PUBLIC_IP" >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
-            # cat ${CIRCLE_WORKFLOW_ID:0:7}   
+            cd ~/project/.circleci/ansible/  
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
-            - project/.circleci/ansible/inventory.txt
+            - inventory.txt
       # Here's where you will add some code to rollback on failure 
       - destroy-environment:   
           Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
@@ -199,7 +199,7 @@ jobs:
           fingerprints:
             - "	21:63:ea:86:20:35:23:f4:02:00:60:35:e6:f1:94:91"
       - attach_workspace:
-          at: ~/
+          at: ~/workspace/
       - run:
           name: Install dependencies
           command: |
@@ -212,7 +212,9 @@ jobs:
           command: |
             
             cd .circleci/ansible
-            ansible-playbook -i ~/inventory.txt configure-server.yml
+            echo "INVENTORY CONTENT BELOW !!"
+            cat ~/workspace/inventory.txt
+            ansible-playbook -i ~/workspace/inventory.txt configure-server.yml
             
       # Here's where you will add some code to rollback on failure 
       - destroy-environment:
@@ -246,7 +248,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
+          at: ~/workspace/
       - run:
           name: Install dependencies
           command: |
@@ -256,7 +258,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filter Name=tag:project,Values="udapeople" --output text)
+            export BACKEND_IP=$(cat ~/workspace/inventory.txt)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -288,7 +290,7 @@ jobs:
             - "	21:63:ea:86:20:35:23:f4:02:00:60:35:e6:f1:94:91"
  
       - attach_workspace:
-          at: ~/
+          at: ~/workspace/
       - run:
           name: Install dependencies
           command: |
@@ -306,11 +308,11 @@ jobs:
             tar -C backend -czvf ~/artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
-            ansible-playbook -i ~/inventory.txt deploy-backend.yml
+            cat ~/workspace/inventory.txt
+            ansible-playbook -i ~/workspace/inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      - destroy-environment:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
+      #- destroy-environment:
+      #    Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
       # - revert-migrations:
       #     Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
 
