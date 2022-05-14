@@ -1,6 +1,37 @@
 version: 2.1
 
 commands:
+
+  install_awscli:
+    description: Install AWS CLI v2
+    steps:
+      - run:
+          name: Install AWS CLI v2
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+
+  install_nodejs:
+    description: Install Node.js 13
+    steps:
+      - run:
+          name: Install Node.js 13
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+            sudo apt install -y nodejs   
+
+  install_ansible:
+    description: Install Ansible
+    steps:
+      - run:
+          name: Install Ansible
+          command: |
+            sudo apt update
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -30,7 +61,7 @@ commands:
 
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS = $(curl https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/7yb5473j/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
             if(( $SUCCESS==1 )); 
             then
              cd ~/project/backend
@@ -225,6 +256,7 @@ jobs:
       - image: cimg/node:16.15
     steps:
       - checkout
+      - install_awscli
       - run:
           name: Run migrations
           command: |
@@ -237,7 +269,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-               curl -X POST https://keyvalue.immanuel.co/api/KeyVal/UpdateValue/7yb5473j/migration_${CIRCLE_WORKFLOW_ID:0:7}/1 -d "Content-Length: 1024"
+                curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi 
 
      # Here's where you will add some code to rollback on failure      
@@ -286,8 +318,11 @@ jobs:
       - image: python:3.9-slim
     steps:
       - checkout
+      - install_awscli
+      - install_ansible
+      - install_nodejs
       - add_ssh_keys:
-          fingerprints: [ "21:63:ea:86:20:35:23:f4:02:00:60:35:e6:f1:94:91" ]
+          fingerprints: ["21:63:ea:86:20:35:23:f4:02:00:60:35:e6:f1:94:91"]
       - attach_workspace:
           at: ~/workspace/
       - run:
@@ -304,7 +339,7 @@ jobs:
             npm i
             npm run build
             cd ..
-            # Zip the directory
+         
             tar -C backend -czvf ~/artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
