@@ -599,7 +599,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7} -d '1'
             fi
       - destroy-environment:
           Workflow_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
@@ -786,6 +786,35 @@ jobs:
 
       - revert-migrations
 
+
+
+
+  cleanup:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum install -y gcc-c++ make 
+            yum -y install tar gzip jq
+      - attach_workspace:
+          at: ~/workspace/
+      - run:
+          name: Remove old stacks and files
+          command: |
+            cat ~/workspace/lastFlow.txt
+            export OldWorkflowID=$(cat ~/workspace/lastFlow.txt)
+            export CurrentWorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
+            if [[ "$CurrentWorkflowID" == "$OldWorkflowID" ]]
+            then
+              echo "No Old stack to be deleted"
+            else
+              echo "will delete old version"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
 
       # Here's where you will add some code to rollback on failure  
 #   cloudfront-update:
