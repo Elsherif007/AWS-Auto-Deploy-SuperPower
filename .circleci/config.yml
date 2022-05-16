@@ -760,12 +760,11 @@ jobs:
       - run:
           name: Retrieve old stack workflow ID
           command: |
-            export OLD_WORKFLOW_ID=$(aws cloudformation list-exports \
+            aws cloudformation list-exports \
               --query "Exports[?Name==\`WorkflowID\`].Value" \
               --no-paginate \
-              --output text) 
-            echo "Old Workflow Id:$OLD_WORKFLOW_ID"
-            curl https://kvdb.io/${KVDB_BUCKET}/old_workflow_id -d "$OLD_WORKFLOW_ID"
+              --output text > lastFlow.txt
+            cat lastFlow.txt
       - run:
           name: Update cloudfront distribution
           command: |
@@ -777,10 +776,10 @@ jobs:
             # aws cloudfront create-invalidation \
             # --distribution-id EMMIA37IDBU67 \
             # --paths "/*"
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - lastFlow.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - lastFlow.txt
       - destroy-environment:
           Workflow_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
 
