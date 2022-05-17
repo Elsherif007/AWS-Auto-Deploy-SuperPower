@@ -756,7 +756,7 @@ jobs:
                       --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}" \
                       --stack-name InitialStack \
             aws cloudfront create-invalidation \
-            --distribution-id E4LU8LODBLMCW \
+            --distribution-id EMMIA37IDBU67 \
             --paths "/*"
 
       - destroy-environment:
