@@ -769,10 +769,9 @@ jobs:
   #     - run:
   #         name: Install dependencies
   #         command: |
-  #           yum install -y gcc-c++ make 
-  #           yum -y install tar gzip jq
-  #     - attach_workspace:
-  #         at: ~/workspace/
+          
+  #           yum -y install tar gzip 
+
   #     - run:
   #         name: Remove old stacks and files
   #         command: |
