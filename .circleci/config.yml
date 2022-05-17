@@ -772,7 +772,7 @@ jobs:
             aws cloudformation deploy \
                       --template-file .circleci/files/cloudfront.yml \
                       --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID}" \
-                      --stack-name udapeople-prod-cloudfront
+                      --stack-name InitialStack
       # - persist_to_workspace:
       #     root: .
       #     paths:
