@@ -778,10 +778,10 @@ jobs:
       #       - lastFlow.txt
       - destroy-environment:
           Workflow_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
-      - persist_to_workspace:
-          root: .
-          paths:
-            - lastFlow.txt
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - lastFlow.txt
       - destroy-environment:
           Workflow_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
 
