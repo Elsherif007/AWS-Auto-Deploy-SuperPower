@@ -42,11 +42,12 @@
     upgrade: yes
 
   
-- name: "Add Node.js"
+- name: "Add And install Node JS"
   become: true
   shell: |
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash - && sudo apt-get install -y nodejs
-- name: "Install Node.js 13"
+
+- name: "Installing Node.js and make sure it is installed"
   become: true
   apt:
     name: ["nodejs"]
