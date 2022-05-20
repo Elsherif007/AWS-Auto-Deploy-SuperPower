@@ -1,43 +1,11 @@
-# - name: "Updating APT Packages."
-#   apt:
-#     update_cache: yes
-
-# - name: "Upgrading APT Packages."
-#   apt:
-#     upgrade: yes
-
-# - name: "Installing prog."
-#   apt:
-#     name: [ "zip", "unzip", "tar" ]
-#     state: latest
-#     # update_cache: yes
-
-# - name: install node
-#   shell: |
-#     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-#     source ~/.bashrc
-#     nvm install v13.8.0
-#     node -v
-#   register: node_version
-
-# - name: "execute node version"
-#   debug:
-#     msg: "{{ node_version.stdout_lines }}"
-    
-# - name: "Installing pm2"
-#   npm:
-#     name: pm2
-#     global: yes
-#     # production: yes     ##remove no use
-#     # state: present
 
 
 
-- name: "update packege"
+- name: "Updating APT Packages"
   apt:
     update_cache: yes
 
-- name: "upgrade package"
+- name: "Upgrading APT Packages"
   apt:
     upgrade: yes
 
