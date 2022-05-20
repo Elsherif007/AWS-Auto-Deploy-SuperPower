@@ -17,10 +17,7 @@
     cd ~/backend
     npm install
     npm i
-# - name: "Copying env vars"
-#   copy:
-#     src: "~/.env"
-#     dest: "~/backend/.env"
+
 
 - name: "sleep"
   shell: |
