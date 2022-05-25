@@ -16,7 +16,6 @@
   shell: |
     cd ~/backend
     npm install
-    npm i
 
 
 - name: "sleep"
