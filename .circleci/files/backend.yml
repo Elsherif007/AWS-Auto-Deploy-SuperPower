@@ -43,7 +43,11 @@ Resources:
           Value: !Sub backend-${ID}
 
 
-  MyEIP:
-  Type: AWS::EC2::EIP 
-  Properties:
-    InstanceId: !Ref EC2Instance
+
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeType: gp2
+            VolumeSize: '30'
+            DeleteOnTermination: 'false'
+            Encrypted: 'true'
