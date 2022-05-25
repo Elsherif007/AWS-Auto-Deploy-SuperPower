@@ -43,7 +43,7 @@ Resources:
           Value: !Sub backend-${ID}
 
 
-    MyEIP:
-    Type: AWS::EC2::EIP 
-    Properties:
-      InstanceId: !Ref EC2Instance
+  MyEIP:
+  Type: AWS::EC2::EIP 
+  Properties:
+    InstanceId: !Ref EC2Instance
